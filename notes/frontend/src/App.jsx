@@ -27,11 +27,42 @@ function App() {
   // console.log(notes)
 
 
+  // function to add a new note
+  const addNote = async (newNote) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/notes",{
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({notes: newNote}) // Send the new note data
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to save the note")
+        
+      }
+
+      // Get the saved note from the response
+      const savedNote = await response.json();
+
+      // update the local state with the new note
+      setNotes((prevNotes)=>[...prevNotes, savedNote]); // Avoid stale state by using prevNotes
+      
+
+      
+    } catch (error) {
+      console.error("Error saving the note:", error);
+    }
+  }
+
+
+
   return (
     <>
     <div className="container">
       <h2> To Do List</h2>
-     <Input />
+     <Input addNote={addNote} />
      <div className="toDoList">
       <ul>
           {notes.map((note) => (
