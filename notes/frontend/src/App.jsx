@@ -56,6 +56,26 @@ function App() {
     }
   }
 
+  const deleteNote = async (id) =>{
+    try {
+      const response = await fetch(`http://localhost:3000/api/notes/${id}`,{
+        method: 'DELETE',
+        headers: {
+          'Content-Type': "application/json"
+        },
+        body: JSON.stringify({id}),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to delete the note');
+      }
+  
+      // Update the local state to remove the deleted note
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
   return (
@@ -68,7 +88,9 @@ function App() {
           {notes.map((note) => (
         <li key={note.id}>
             <List 
-              
+
+              deleteNote = {deleteNote}
+              id = {note.id}
               notes = {note.notes}
              />
         </li>
