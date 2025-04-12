@@ -10,8 +10,8 @@ const app = express.Router();
 // 
 app.get('/tasks', async (req, res)=>{
     try {
-        const result = await pool.query('SELECT * FROM tasks RETURNING *');
-        res.status(201).json(result.rows[0])
+        const result = await pool.query('SELECT * FROM tasks');
+        res.status(200).json(result.rows)
     } catch (error) {
         console.log(error);
         res.status(500).json({message: 'Internal server error'})
@@ -33,6 +33,36 @@ app.post('/addTasks', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+//   app.post('/api/tasks', async (req, res) => {
+//     const { title, description } = req.body;
+    
+//     // Validate input
+//     if (!title || typeof title !== 'string') {
+//         return res.status(400).json({ 
+//             success: false,
+//             message: 'Title is required and must be a string'
+//         });
+//     }
+
+//     try {
+//         const result = await pool.query(
+//             'INSERT INTO tasks (title, description) VALUES ($1, $2) RETURNING *',
+//             [title, description || null] // description is optional
+//         );
+        
+//         res.status(201).json({
+//             success: true,
+//             data: result.rows[0]
+//         });
+//     } catch (error) {
+//         console.error('Create task error:', error.stack);
+//         res.status(500).json({
+//             success: false,
+//             message: 'Failed to create task'
+//         });
+//     }
+// });
 
 
 //   to update the tasks

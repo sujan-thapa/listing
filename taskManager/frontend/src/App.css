@@ -1,0 +1,53 @@
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.task-form {
+  margin-bottom: 20px;
+}
+
+.task-form input, .task-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.task-form button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.task-list {
+  display: grid;
+  gap: 10px;
+}
+
+.task {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.task.completed {
+  opacity: 0.7;
+  background-color: #f5f5f5;
+}
+
+.task h3 {
+  margin-top: 0;
+}
+
+.task-actions {
+  margin-top: 10px;
+}
+
+.task-actions button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
