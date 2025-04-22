@@ -65,23 +65,98 @@ app.post('/addTasks', async (req, res) => {
 // });
 
 
-//   to update the tasks
-app.put('/task/:id', async (req, res)=>{
-    const id = parseInt(req.params.id)
-    // const {title, description} = req.body
-    try {
-        const result = await pool.query(
-            'UPDATE tasks SET is_completed = true WHERE id = $1 RETURNING *',
-            [id]
-          );
-          res.json(result.rows[0]);
+// put - update the entire task
+app.put('/tasks/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, description, is_completed } = req.body;
+
+  // Validate input
+  if (!title || typeof title !== 'string') {
+      return res.status(400).json({
+          success: false,
+          message: 'Valid title is required'
+      });
+  }
+
+  try {
+      // Check if task exists
+      const checkResult = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
+      if (checkResult.rows.length === 0) {
+          return res.status(404).json({
+              success: false,
+              message: 'Task not found'
+          });
+      }
+
+      const result = await pool.query(
+          'UPDATE tasks SET title = $1, description = $2, is_completed = $3 WHERE id = $4 RETURNING *',
+          [title, description || null, Boolean(is_completed), id]
+      );
+
+      res.status(200).json({
+          success: true,
+          data: result.rows[0]
+      });
+  } catch (error) {
+      console.error('PUT /tasks/:id error:', error.stack);
+      res.status(500).json({
+          success: false,
+          message: 'Failed to update task'
+      });
+  }
+});
+
+
+// PATCH - Toggle task completion status
+app.patch('/tasks/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  try {
+      // Check if task exists
+      const checkResult = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
+      if (checkResult.rows.length === 0) {
+          return res.status(404).json({
+              success: false,
+              message: 'Task not found'
+          });
+      }
+
+      const currentStatus = checkResult.rows[0].is_completed;
+      const result = await pool.query(
+          'UPDATE tasks SET is_completed = $1 WHERE id = $2 RETURNING *',
+          [!currentStatus, id]
+      );
+
+      res.status(200).json({
+          success: true,
+          data: result.rows[0]
+      });
+  } catch (error) {
+      console.error('PATCH /tasks/:id error:', error.stack);
+      res.status(500).json({
+          success: false,
+          message: 'Failed to update task status'
+      });
+  }
+});
+
+// //   to update the tasks
+// app.put('/task/:id', async (req, res)=>{
+//     const id = parseInt(req.params.id)
+//     // const {title, description} = req.body
+//     try {
+//         const result = await pool.query(
+//             'UPDATE tasks SET is_completed = true WHERE id = $1 RETURNING *',
+//             [id]
+//           );
+//           res.json(result.rows[0]);
         
-    } catch (error) {
-        console.error(err);
-        res.status(500).send('Server error');
+//     } catch (error) {
+//         console.error(err);
+//         res.status(500).send('Server error');
         
-    }
-})
+//     }
+// })
 
 // to delete the tasks
 app.delete('/task/:id', async (req, res)=>{

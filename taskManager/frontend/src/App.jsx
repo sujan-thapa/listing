@@ -114,6 +114,82 @@ function App() {
     }
   }
 
+
+   // UPDATE TASK FUNCTIONALITY
+   const updateTask = async (taskId) => {
+    if (!title.trim()) {
+      setError('Task title is required');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.put(`http://localhost:3000/api/tasks/${taskId}`, {
+        title: title.trim(),
+        description: description.trim() || null
+      });
+
+      const updatedTask = {
+        id: taskId,
+        title: response.data?.data?.title || title,
+        description: response.data?.data?.description || description,
+        is_completed: Boolean(response.data?.data?.is_completed)
+      };
+
+      setTasks(tasks.map(task => 
+        task.id === taskId ? updatedTask : task
+      ));
+
+      setTitle('');
+      setDescription('');
+      setEditingTask(null);
+    } catch (err) {
+      console.error('Update task error:', err);
+      setError(err.response?.data?.message || 'Failed to update task');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+ // TOGGLE TASK COMPLETION STATUS
+ const toggleTaskStatus = async (taskId) => {
+  try {
+    const taskToUpdate = tasks.find(task => task.id === taskId);
+    const response = await axios.patch(`http://localhost:3000/api/tasks/${taskId}`, {
+      is_completed: !taskToUpdate.is_completed
+    });
+
+    setTasks(tasks.map(task => 
+      task.id === taskId 
+        ? { ...task, is_completed: !task.is_completed }
+        : task
+    ));
+  } catch (err) {
+    console.error('Toggle status error:', err);
+    setError(err.response?.data?.message || 'Failed to update task status');
+  }
+};
+
+
+  // SET TASK FOR EDITING
+  const editTask = (task) => {
+    setEditingTask(task.id);
+    setTitle(task.title);
+    setDescription(task.description);
+  };
+
+  // CANCEL EDITING
+  const cancelEdit = () => {
+    setEditingTask(null);
+    setTitle('');
+    setDescription('');
+  };
+
+
   return (
     <div className="App">
       <h1>Task Manager</h1>
@@ -135,15 +211,47 @@ function App() {
           onChange={(e) => setDescription(e.target.value)}
           disabled={loading}
         />
-        <button
+        
+
+        {editingTask ? (
+          <>
+          {/* {console.log(editingTask)} */}
+            <button
+              onClick={() => updateTask(editingTask)}
+              disabled={loading || !title.trim()}
+            >
+              {loading ? 'Updating...' : 'Update Task'}
+            </button>
+            <button onClick={cancelEdit} disabled={loading}>
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={addTask}
+            disabled={loading || !title.trim()}
+          >
+            {loading ? 'Adding...' : 'Add Task'}
+          </button>
+        )}
+
+
+
+        {/* <button
           onClick={addTask}
           disabled={loading || !title.trim()}
         >
           {loading ? 'Adding...' : 'Add Task'}
-        </button>
+        </button> */}
       </div>
 
       {/* ... (your existing task list code) ... */}
+
+
+
+
+      
+
 
 
 
