@@ -8,6 +8,8 @@ function App() {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [editingTask, setEditingTask] = useState(null);
+
 
 
   useEffect(() => {
@@ -159,12 +161,39 @@ function App() {
         ) : (
           tasks.map(task => (
             <div key={task.id} className={`task ${task.is_completed ? 'completed' : ''}`}>
-              <h3>{task.title}</h3>
-              <p>{task.description}</p>
-              <div className="task-status">
-                Status: {task.is_completed ? 'Completed' : 'Pending'}
+              <div className="task-content">
+
+                <h3>{task.title}</h3>
+                <p>{task.description}</p>
+                <div className="task-status">
+                  Status: {task.is_completed ? 'Completed' : 'Pending'}
+                </div>
+              </div>
+
+              <div className="task-actions">
+                <button
+                  onClick={() => toggleTaskStatus(task.id)}
+                  className="status-btn"
+                >
+                  {task.is_completed ? 'Mark Pending' : 'Mark Complete'}
+                </button>
+
+                <button
+                  onClick={() => editTask(task)}
+                  className="edit-btn"
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  className='delete-btn'
+                >
+                  Delete
+                </button>
               </div>
             </div>
+
           ))
         )}
       </div>

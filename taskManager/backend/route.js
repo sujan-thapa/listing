@@ -7,7 +7,7 @@ const app = express.Router();
 
 
 
-// 
+// for fetching datas
 app.get('/tasks', async (req, res)=>{
     try {
         const result = await pool.query('SELECT * FROM tasks');
@@ -18,7 +18,7 @@ app.get('/tasks', async (req, res)=>{
     }
 })
 
-
+// to add tasks
 app.post('/addTasks', async (req, res) => {
     const { title, description } = req.body;
   

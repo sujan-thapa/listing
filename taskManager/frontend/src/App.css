@@ -51,3 +51,28 @@
   padding: 5px 10px;
   cursor: pointer;
 }
+
+button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.status-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
