@@ -154,7 +154,23 @@ function App() {
   };
 
 
+  // DELETE TASK FUNCTIONALITY
+  const deleteTask = async (taskId) => {
+    if (!window.confirm('Are you sure you want to delete this task?')) return;
 
+    setLoading(true);
+    try {
+      await axios.delete(`http://localhost:3000/api/tasks/${taskId}`);
+      setTasks(tasks.filter(task => task.id !== taskId));
+    } catch (err) {
+      console.error('Delete task error:', err);
+      setError(err.response?.data?.message || 'Failed to delete task');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
  // TOGGLE TASK COMPLETION STATUS
  const toggleTaskStatus = async (taskId) => {
   try {
