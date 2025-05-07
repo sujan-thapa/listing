@@ -1,0 +1,7 @@
+@import "./base/_reset.css";
+@import "./base/_variables.css";
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--text-color);
+}
